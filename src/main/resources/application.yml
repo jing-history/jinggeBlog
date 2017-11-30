@@ -2,6 +2,10 @@
 spring:
   application:
      name: jinggeBlog  # Service registers under this name
+  thymeleaf:
+    cache: false
+  jade4j:
+    caching: false
 
 # HTTP Server
 server:
