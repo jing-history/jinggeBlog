@@ -14,8 +14,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.Valid;
+import java.security.Principal;
+
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  * Created by wangyunjing on 2017/12/6.
@@ -56,5 +62,23 @@ public class PostController {
         model.addAttribute("postStatus", PostStatus.values());
 
         return "admin/posts/new";
+    }
+
+    @RequestMapping(value = "", method = POST)
+    public String create(Principal principal, @Valid PostForm postForm, Errors errors, Model model){
+        if (errors.hasErrors()) {
+            model.addAttribute("postFormats", PostFormat.values());
+            model.addAttribute("postStatus", PostStatus.values());
+
+            return "admin/posts/new";
+        } else {
+            Post post = DTOUtil.map(postForm, Post.class);
+            post.setUser(userRepository.findByEmail(principal.getName()));
+            post.setTags(postService.parseTagNames(postForm.getPostTags()));
+
+            postService.createPost(post);
+
+            return "redirect:/admin/posts";
+        }
     }
 }

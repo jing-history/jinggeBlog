@@ -2,6 +2,7 @@ package gq.jingge.blog.service;
 
 import gq.jingge.blog.dao.PostRepository;
 import gq.jingge.blog.domain.Post;
+import gq.jingge.blog.domain.Tag;
 import gq.jingge.blog.domain.support.PostStatus;
 import gq.jingge.blog.domain.support.PostType;
 import org.slf4j.Logger;
@@ -12,6 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by wangyunjing on 2017/11/30.
@@ -28,6 +32,9 @@ public class PostService {
     public static final String CACHE_NAME_COUNTS = CACHE_NAME + ".counts_tags";
 
     @Autowired
+    private TagService tagService;
+
+    @Autowired
     private PostRepository postRepository;
 
     @Cacheable(value = CACHE_NAME_PAGE, key = "T(java.lang.String).valueOf(#page).concat('-').concat(#pageSize)")
@@ -38,5 +45,22 @@ public class PostService {
                 PostType.POST,
                 PostStatus.PUBLISHED,
                 new PageRequest(page, pageSize, Sort.Direction.DESC, "createdAt"));
+    }
+
+    public Set<Tag> parseTagNames(String tagNames) {
+        Set<Tag> tags = new HashSet<>();
+
+        if (tagNames != null && !tagNames.isEmpty()) {
+            tagNames = tagNames.toLowerCase();
+            String[] names = tagNames.split("\\s*,\\s*");
+            for (String name : names) {
+                tags.add(tagService.findOrCreateByName(name));
+            }
+        }
+
+        return tags;
+    }
+
+    public void createPost(Post post) {
     }
 }
