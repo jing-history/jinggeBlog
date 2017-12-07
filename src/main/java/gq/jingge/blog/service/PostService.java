@@ -3,12 +3,16 @@ package gq.jingge.blog.service;
 import gq.jingge.blog.dao.PostRepository;
 import gq.jingge.blog.domain.Post;
 import gq.jingge.blog.domain.Tag;
+import gq.jingge.blog.domain.support.PostFormat;
 import gq.jingge.blog.domain.support.PostStatus;
 import gq.jingge.blog.domain.support.PostType;
+import gq.jingge.blog.util.Markdown;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -61,6 +65,16 @@ public class PostService {
         return tags;
     }
 
-    public void createPost(Post post) {
+    @Caching(evict = {
+            @CacheEvict(value = CACHE_NAME_ARCHIVE, allEntries = true),
+            @CacheEvict(value = CACHE_NAME_PAGE, allEntries = true),
+            @CacheEvict(value = CACHE_NAME_COUNTS, allEntries = true)
+    })
+    public Post createPost(Post post) {
+        if (post.getPostFormat() == PostFormat.MARKDOWN) {
+            post.setRenderedContent(Markdown.markdownToHtml(post.getContent()));
+        }
+
+        return postRepository.save(post);
     }
 }
