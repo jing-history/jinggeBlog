@@ -6,6 +6,7 @@ import gq.jingge.blog.domain.Tag;
 import gq.jingge.blog.domain.support.PostFormat;
 import gq.jingge.blog.domain.support.PostStatus;
 import gq.jingge.blog.domain.support.PostType;
+import gq.jingge.blog.error.NotFoundException;
 import gq.jingge.blog.util.Markdown;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -77,4 +80,59 @@ public class PostService {
 
         return postRepository.save(post);
     }
+
+    @Cacheable(CACHE_NAME)
+    public Post getPublishedPostByPermalink(String permalink) {
+        logger.debug("Get post with permalink " + permalink);
+
+        Post post = postRepository.findByPermalinkAndPostStatus(permalink, PostStatus.PUBLISHED);
+
+        if (post == null) {
+            throw new NotFoundException("Post with permalink '" + permalink + "' is not found.");
+        }
+
+        return post;
+    }
+
+    @Cacheable(CACHE_NAME)
+    public Post getPost(Long postId) {
+        logger.debug("Get post " + postId);
+
+        Post post = postRepository.findOne(postId);
+
+        if (post == null) {
+            throw new NotFoundException("Post with id " + postId + " is not found.");
+        }
+
+        return post;
+    }
+
+    @Cacheable(value = CACHE_NAME_TAGS, key = "#post.id.toString().concat('-tags')")
+    public List<Tag> getPostTags(Post post) {
+        logger.debug("Get tags of post " + post.getId());
+
+        List<Tag> tags = new ArrayList<>();
+
+        // Load the post first. If not, when the post is cached before while the tags not,
+        // then the LAZY loading of post tags will cause an initialization error because
+        // of not hibernate connection session
+        postRepository.findOne(post.getId()).getTags().forEach(tags::add);
+        return tags;
+    }
+
+    /*@Cacheable(value = CACHE_NAME_ARCHIVE, key = "#root.method.name")
+    public List<Post> getArchivePosts() {
+        logger.debug("Get all archive posts from database.");
+
+        Iterable<Post> posts = postRepository.findAllByPostTypeAndPostStatus(
+                PostType.POST,
+                PostStatus.PUBLISHED,
+                new PageRequest(0, Integer.MAX_VALUE, Sort.Direction.DESC, "createdAt"));
+
+        List<Post> cachedPosts = new ArrayList<>();
+        posts.forEach(post -> cachedPosts.add(extractPostMeta(post)));
+
+        return cachedPosts;
+    }*/
+
 }
