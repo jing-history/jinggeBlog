@@ -21,12 +21,12 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    /*@RequestMapping(value = "archive", method = GET)
+    @RequestMapping(value = "archive", method = GET)
     public String archive(Model model){
         model.addAttribute("posts", postService.getArchivePosts());
 
         return "posts/archive";
-    }*/
+    }
 
     @RequestMapping(value = "{permalink}", method = GET)
     public String show(@PathVariable String permalink, Model model){

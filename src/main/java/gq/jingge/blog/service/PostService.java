@@ -120,7 +120,7 @@ public class PostService {
         return tags;
     }
 
-    /*@Cacheable(value = CACHE_NAME_ARCHIVE, key = "#root.method.name")
+    @Cacheable(value = CACHE_NAME_ARCHIVE, key = "#root.method.name")
     public List<Post> getArchivePosts() {
         logger.debug("Get all archive posts from database.");
 
@@ -133,6 +133,38 @@ public class PostService {
         posts.forEach(post -> cachedPosts.add(extractPostMeta(post)));
 
         return cachedPosts;
-    }*/
+    }
 
+    private Post extractPostMeta(Post post) {
+        Post archivePost = new Post();
+        archivePost.setId(post.getId());
+        archivePost.setTitle(post.getTitle());
+        archivePost.setPermalink(post.getPermalink());
+        archivePost.setCreatedAt(post.getCreatedAt());
+
+        return archivePost;
+    }
+
+    public String getTagNames(Set<Tag> tags) {
+        if (tags == null || tags.isEmpty())
+            return "";
+
+        StringBuilder names = new StringBuilder();
+        tags.forEach(tag -> names.append(tag.getName()).append(","));
+        names.deleteCharAt(names.length() - 1);
+
+        return names.toString();
+    }
+
+    public void deletePost(Post post) {
+        postRepository.delete(post);
+    }
+
+    public Post updatePost(Post post) {
+        if (post.getPostFormat() == PostFormat.MARKDOWN) {
+            post.setRenderedContent(Markdown.markdownToHtml(post.getContent()));
+        }
+
+        return postRepository.save(post);
+    }
 }

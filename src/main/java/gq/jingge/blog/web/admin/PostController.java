@@ -15,13 +15,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.security.Principal;
 
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 /**
  * Created by wangyunjing on 2017/12/6.
@@ -77,6 +80,45 @@ public class PostController {
             post.setTags(postService.parseTagNames(postForm.getPostTags()));
 
             postService.createPost(post);
+
+            return "redirect:/admin/posts";
+        }
+    }
+
+    @RequestMapping(value = "{postId:[0-9]+}/edit")
+    public String editPost(@PathVariable Long postId, Model model){
+        Post post = postRepository.findOne(postId);
+        PostForm postForm = DTOUtil.map(post, PostForm.class);
+
+        postForm.setPostTags(postService.getTagNames(post.getTags()));
+
+        model.addAttribute("post", post);
+        model.addAttribute("postForm", postForm);
+        model.addAttribute("postFormats", PostFormat.values());
+        model.addAttribute("postStatus", PostStatus.values());
+
+        return "admin/posts/edit";
+    }
+
+    @RequestMapping(value = "{postId:[0-9]+}/delete", method = {DELETE, POST})
+    public String deletePost(@PathVariable Long postId){
+        postService.deletePost(postRepository.findOne(postId));
+        return "redirect:/admin/posts";
+    }
+
+    @RequestMapping(value = "{postId:[0-9]+}", method = {PUT, POST})
+    public String update(@PathVariable Long postId, @Valid PostForm postForm, Errors errors, Model model){
+        if (errors.hasErrors()){
+            model.addAttribute("postFormats", PostFormat.values());
+            model.addAttribute("postStatus", PostStatus.values());
+
+            return "admin/posts_edit";
+        } else {
+            Post post = postRepository.findOne(postId);
+            DTOUtil.mapTo(postForm, post);
+            post.setTags(postService.parseTagNames(postForm.getPostTags()));
+
+            postService.updatePost(post);
 
             return "redirect:/admin/posts";
         }
