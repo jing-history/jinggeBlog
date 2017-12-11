@@ -1,5 +1,6 @@
 package gq.jingge.blog.web;
 
+import gq.jingge.blog.config.Constants;
 import gq.jingge.blog.domain.Post;
 import gq.jingge.blog.service.AppSetting;
 import gq.jingge.blog.service.PostService;
@@ -34,5 +35,17 @@ public class HomeController {
         model.addAttribute("page", page + 1);
 
         return "home/index";
+    }
+
+    @RequestMapping(value = "about", method = GET)
+    public String about(Model model) {
+        Post post = postService.getPublishedPostByPermalink(Constants.ABOUT_PAGE_PERMALINK);
+
+        if (post == null) {
+            post = postService.createAboutPage();
+        }
+
+        model.addAttribute("about", post);
+        return "home/about";
     }
 }

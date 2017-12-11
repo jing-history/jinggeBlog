@@ -5,6 +5,7 @@ import gq.jingge.blog.domain.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,5 +36,10 @@ public class TagService {
             tag = tagRepository.save(new Tag(name));
         }
         return tag;
+    }
+
+    @Cacheable(value = CACHE_NAME, key = CACHE_KEY)
+    public Tag getTag(String tagName) {
+        return tagRepository.findByName(tagName);
     }
 }

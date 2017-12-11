@@ -1,5 +1,6 @@
 package gq.jingge.blog.service;
 
+import gq.jingge.blog.config.Constants;
 import gq.jingge.blog.dao.PostRepository;
 import gq.jingge.blog.domain.Post;
 import gq.jingge.blog.domain.Tag;
@@ -40,6 +41,9 @@ public class PostService {
 
     @Autowired
     private TagService tagService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private PostRepository postRepository;
@@ -166,5 +170,30 @@ public class PostService {
         }
 
         return postRepository.save(post);
+    }
+
+    @Cacheable(value = CACHE_NAME_COUNTS, key = "#root.method.name")
+    public List<Object[]> countPostsByTags() {
+        logger.debug("Count posts group by tags.");
+
+        return postRepository.countPostsByTags(PostStatus.PUBLISHED);
+    }
+
+    // cache or not?
+    public Page<Post> findPostsByTag(String tagName, int page, int pageSize) {
+        return postRepository.findByTag(tagName, new PageRequest(page, pageSize, Sort.Direction.DESC, "createdAt"));
+    }
+
+    public Post createAboutPage() {
+        logger.debug("Create default about page");
+
+        Post post = new Post();
+        post.setTitle(Constants.ABOUT_PAGE_PERMALINK);
+        post.setContent(Constants.ABOUT_PAGE_PERMALINK.toLowerCase());
+        post.setPermalink(Constants.ABOUT_PAGE_PERMALINK);
+        post.setUser(userService.getSuperUser());
+        post.setPostFormat(PostFormat.MARKDOWN);
+
+        return createPost(post);
     }
 }

@@ -11,7 +11,7 @@ public final class Constants {
 
     public static final String DEFAULT_ADMIN_EMAIL = "admin@admin.com";
 
-    public static final String DEFAULT_ADMIN_PASSWORD = "admin";
+    public static final String DEFAULT_ADMIN_PASSWORD = "62661206";
 
     public static final String ABOUT_PAGE_PERMALINK = "about";
 
