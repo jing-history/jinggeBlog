@@ -10,14 +10,14 @@ nav.navbar.navbar-fixed-top.navbar-default
         span #{App.getSiteName()}
     .collapse.navbar-collapse#navbar
       ul.nav.navbar-nav
-        li: a(href="/admin/posts") Posts
-        li: a(href="/admin/settings") Settings
-        li: a(href="/admin/users/profile") Profile
-        li: a(href="/") Site Home
+        li: a(href="/admin/posts") 博文
+        li: a(href="/admin/settings") 设置
+        li: a(href="/admin/users/profile") 帐号
+        li: a(href="/") 主页
         
       ul.nav.navbar-nav.navbar-right.navbar-user
         li
-          a(href="javascript:$('#form').submit();") Logout
+          a(href="javascript:$('#form').submit();") 退出
         
           form#form(style="visibility: hidden", method="post", action="/logout")
             input(type="hidden", name='_csrf', value='#{_csrf.token}')

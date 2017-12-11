@@ -11,10 +11,10 @@ block content
   .post 
     .content
       .year
-        h2 2015
+        h2 2017
         ul.archive-list
           for post in posts 
-            if post.getCreatedAt().getYear() == (2015 - 1900)
+            if post.getCreatedAt().getYear() == (2017 - 1900)
               li
                 span.month 
                   = viewHelper.getMonthAndDay(post.getCreatedAt())

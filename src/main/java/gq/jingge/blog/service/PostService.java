@@ -89,7 +89,7 @@ public class PostService {
     public Post getPublishedPostByPermalink(String permalink) {
         logger.debug("Get post with permalink " + permalink);
 
-        Post post = postRepository.findByPermalinkAndPostStatus(permalink, PostStatus.PUBLISHED);
+        Post post = postRepository.findByPermalinkAndPostStatus(permalink, PostStatus.DRAFT);
 
         if (post == null) {
             throw new NotFoundException("Post with permalink '" + permalink + "' is not found.");
