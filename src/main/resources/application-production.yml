@@ -3,18 +3,18 @@ spring:
   application:
     name: jingzingBlog  # Service registers under this name
   profiles:
-    active: dev
+    active: production
   thymeleaf:
-    cache: false
+    cache: true
   jade4j:
-    caching: false
+    caching: true
 
 # HTTP Server
 server:
   port: 7777   # 动态分配端口
 
 druid:
-  name: blog-db1
+  name: ol-blog
   type: com.alibaba.druid.pool.DruidDataSource
   driver-class-name: com.mysql.jdbc.Driver
 # 初始化大小，最小，最大
@@ -38,10 +38,10 @@ druid:
   filters: stat,wall,log4j,config
 # 合并多个DruidDataSource的监控数据
 #   useGlobalDataSourceStat: true
-  url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf-8&useSSL=false
-  username: root
+  url: jdbc:mysql://45.32.12.187:3306/blog?useUnicode=true&characterEncoding=utf-8&useSSL=false
+  username: jingzing
   #java -cp druid-1.0.16.jar com.alibaba.druid.filter.config.ConfigTools 你的密码(admin123) admin soonfor
-  password:
+  password: jing62661206
   # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
   connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
 

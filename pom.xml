@@ -36,6 +36,8 @@
         <jmeter.result.html.dir>${project.build.directory}\jmeter\html</jmeter.result.html.dir>
         <jmeter.result.html.dir1>${project.build.directory}\jmeter\html1</jmeter.result.html.dir1>
         <ReportName>TestReport</ReportName>
+        <docker.plugin.version>0.4.13</docker.plugin.version>
+        <docker.image.prefix>jingzing</docker.image.prefix>
     </properties>
 
     <dependencies>
@@ -157,11 +159,33 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <fork>true</fork>
-                </configuration>
             </plugin>
 
+            <!--<plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.13</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <dockerDirectory>${project.basedir}/</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>-->
+            <!--
             <plugin>
                 <groupId>com.lazerycode.jmeter</groupId>
                 <artifactId>jmeter-maven-plugin</artifactId>
@@ -176,7 +200,7 @@
                 </executions>
             </plugin>
 
-            <!--<plugin>
+            <plugin>
                 <groupId>de.codecentric</groupId>
                 <artifactId>jmeter-graph-maven-plugin</artifactId>
                 <version>0.1.0</version>
@@ -191,7 +215,7 @@
                         </graph>
                     </graphs>
                 </configuration>
-            </plugin>-->
+            </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -231,7 +255,7 @@
                         </transformationSet>
                     </transformationSets>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 </project>
