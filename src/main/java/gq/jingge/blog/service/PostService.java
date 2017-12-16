@@ -160,10 +160,21 @@ public class PostService {
         return names.toString();
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = CACHE_NAME, allEntries = true),
+            @CacheEvict(value = CACHE_NAME_ARCHIVE, allEntries = true),
+            @CacheEvict(value = CACHE_NAME_PAGE, allEntries = true),
+            @CacheEvict(value = CACHE_NAME_COUNTS, allEntries = true)
+    })
     public void deletePost(Post post) {
         postRepository.delete(post);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = CACHE_NAME, allEntries = true),
+            @CacheEvict(value = CACHE_NAME_PAGE, allEntries = true),
+            @CacheEvict(value = CACHE_NAME_COUNTS, allEntries = true)
+    })
     public Post updatePost(Post post) {
         if (post.getPostFormat() == PostFormat.MARKDOWN) {
             post.setRenderedContent(Markdown.markdownToHtml(post.getContent()));
