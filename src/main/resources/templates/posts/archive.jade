@@ -19,6 +19,6 @@ block content
                 span.month 
                   = viewHelper.getMonthAndDay(post.getCreatedAt())
                 span &nbsp;&nbsp;·&nbsp; 
-                a(href="/posts/#{post.getPermalink() == null ? post.getId() : post.getPermalink()}") 
+                a(href="/posts/#{post.getPermalink().length() > 0 ? post.getPermalink() : post.getId()}")
                   = post.getTitle()
         
