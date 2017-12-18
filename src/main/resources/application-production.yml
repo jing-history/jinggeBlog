@@ -50,13 +50,9 @@ hibernate:
   hbm2ddl.auto: update
   show_sql: false
 
-#logging:
-#  config:
-#    classpath: logback-spring.xml
 logging:
-  level:
-    ROOT: INFO
-    org.springframework.web: INFO
+  config:
+    classpath: logback-spring.xml
 
 management:
   security:

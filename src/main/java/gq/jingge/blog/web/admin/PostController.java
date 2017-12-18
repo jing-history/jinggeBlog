@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 
@@ -65,6 +66,11 @@ public class PostController {
         model.addAttribute("postStatus", PostStatus.values());
 
         return "admin/posts/new";
+    }
+
+    @RequestMapping(value = "{postId:[0-9]+}/temp", method = {PUT, POST})
+    public String temp(@PathVariable Long postId, @Valid PostForm postForm, Errors errors, Model model){
+        return "yes";
     }
 
     @RequestMapping(value = "", method = POST)
