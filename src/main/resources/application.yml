@@ -38,10 +38,10 @@ druid:
   filters: stat,wall,log4j,config
 # 合并多个DruidDataSource的监控数据
 #   useGlobalDataSourceStat: true
-  url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf-8&useSSL=false
+  url: jdbc:mysql://10.211.55.20:3306/blog?useUnicode=true&characterEncoding=utf-8&useSSL=false
   username: root
   #java -cp druid-1.0.16.jar com.alibaba.druid.filter.config.ConfigTools 你的密码(admin123) admin soonfor
-  password:
+  password: 62661206
   # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
   connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
 

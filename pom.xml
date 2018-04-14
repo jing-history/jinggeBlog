@@ -32,10 +32,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <jmeter.result.jtl.dir>${project.build.directory}\jmeter\results</jmeter.result.jtl.dir>
-        <jmeter.result.html.dir>${project.build.directory}\jmeter\html</jmeter.result.html.dir>
-        <jmeter.result.html.dir1>${project.build.directory}\jmeter\html1</jmeter.result.html.dir1>
-        <ReportName>TestReport</ReportName>
         <docker.plugin.version>0.4.13</docker.plugin.version>
         <docker.image.prefix>jingzing</docker.image.prefix>
     </properties>
@@ -162,9 +158,51 @@
 
     <build>
         <plugins>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>-->
+
+            <!-- 打包jar文件时，配置manifest文件，加入lib包的jar依赖 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <classesDirectory>target/classes/</classesDirectory>
+                    <archive>
+                        <manifest>
+                            <mainClass>gq.jingge.JinggeBlogApplication</mainClass>
+                            <!-- 打包时 MANIFEST.MF文件不记录的时间戳版本 -->
+                            <useUniqueVersions>false</useUniqueVersions>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                        </manifest>
+                        <manifestEntries>
+                            <Class-Path>.</Class-Path>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <type>jar</type>
+                            <includeTypes>jar</includeTypes>
+                            <outputDirectory>
+                                ${project.build.directory}/lib
+                            </outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!--<plugin>
@@ -189,77 +227,6 @@
                             <include>${project.build.finalName}.jar</include>
                         </resource>
                     </resources>
-                </configuration>
-            </plugin>-->
-            <!--
-            <plugin>
-                <groupId>com.lazerycode.jmeter</groupId>
-                <artifactId>jmeter-maven-plugin</artifactId>
-                <version>2.5.1</version>
-                <executions>
-                    <execution>
-                        <id>jmeter-tests</id>
-                        <goals>
-                            <goal>jmeter</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>de.codecentric</groupId>
-                <artifactId>jmeter-graph-maven-plugin</artifactId>
-                <version>0.1.0</version>
-                <configuration>
-                    <inputFile>${project.build.directory}/jmeter/results/jinggeBlog.jtl</inputFile>
-                    <graphs>
-                        <graph>
-                            <pluginType>ResponseTimesOverTime</pluginType>
-                            <width>800</width>
-                            <height>600</height>
-                            <outputFile>${project.build.directory}/jmeter/results/jinggeBlog.png</outputFile>
-                        </graph>
-                    </graphs>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>xml-maven-plugin</artifactId>
-                <version>1.0.1</version>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>transform</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <transformationSets>
-                        <transformationSet>
-                            <dir>${jmeter.result.jtl.dir}</dir>
-                            <stylesheet>src\test\resources\jmeter-results-report-loadtest.xsl</stylesheet>
-                            <outputDir>${jmeter.result.html.dir}</outputDir>
-                            <fileMappers>
-                                <fileMapper
-                                        implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-                                    <targetExtension>html</targetExtension>
-                                </fileMapper>
-                            </fileMappers>
-                        </transformationSet>
-                        <transformationSet>
-                            <dir>${jmeter.result.jtl.dir}</dir>
-                            <stylesheet>src\test\resources\jmeter.results.shanhe.me.xsl</stylesheet>
-                            <outputDir>${jmeter.result.html.dir1}</outputDir>
-                            <fileMappers>
-                                <fileMapper
-                                        implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-                                    <targetExtension>html</targetExtension>
-                                </fileMapper>
-                            </fileMappers>
-                        </transformationSet>
-                    </transformationSets>
                 </configuration>
             </plugin>-->
         </plugins>
