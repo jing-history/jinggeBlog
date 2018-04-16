@@ -15,3 +15,17 @@
    `yum -y install java-1.8.0-openjdk* `
    `安装完成之后，安装的目录JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.144-0.b01.el7_4.x86_64`
 
+- - -
+**上面使用的yum 的方式默认安装，虽然隐藏了安装细节，但是却不知道安装路径，
+因此建议将java 免安装版上传到Linux 对应的目录，然后修改配置文件来直接java 环境。**
+   `vi /etc/profile`
+   `JAVA_HOME=/root/zing/jdk1.8.0_144`
+   `export JAVA_HOME`
+   `PATH=$JAVA_HOME/bin:$PATH`
+   `export PATH`
+   `source /etc/profile`
+   `java -version 来显示安装好的Java 环境变量` 
+   
+   **或者：修改 .bash_profile 环境配置**
+>    /etc/profile 系统整体设置 
+>    ~/.bash_profile 用户个人设置
