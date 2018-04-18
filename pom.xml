@@ -97,6 +97,13 @@
             <version>19.0</version>
         </dependency>
 
+        <!-- add plugs -->
+        <!--<dependency> https://www.cnblogs.com/chenkeyu/p/8514250.html
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.6.1</version>
+        </dependency>-->
+
         <!-- web jar -->
         <dependency>
             <groupId>org.webjars</groupId>
