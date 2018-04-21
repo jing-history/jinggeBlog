@@ -227,3 +227,114 @@ OK，检查好已添加至源后就可以进行yum安装了。
 ​	MySQL Replication Health is OK.
 
    </code></pre>
+
+***坑点2：masterha_check_repl 检测没有通过，报下面错误：***
+
+![01.jpg](http://www.wailian.work/images/2018/04/21/01.jpg)
+
+[MHA 报错：There is no alive slave. We can't do failover](http://www.mamicode.com/info-detail-2089525.html) 	
+
+> 关于该问题，比较靠谱的解释是：（我的问题是没有关防火墙）
+
+MHA默认去连接MySQL的端口是：3306
+
+如果你的主机名解析，或者你写的IP都没问题**<u>，防火墙也关闭了</u>**，那么，剩下的原因是：
+
+你的MySQL，没有运行在默认端口上。
+
+如果不能修改MySQL的端口为：3306。
+
+那么你可以给MHA，添加PORT描述。
+
+> vi /etc/mha/mha_start       //编辑mha启动脚本，直接运行下面启动也可以
+
+`nohup masterha_manager --conf=/etc/mha/mha.cnf > /tmp/mha_manager.log 2>&1 &`
+
+------
+
+
+
+#### 测试
+
+**现在两个slave的Master_Host同为241，把241干掉后，就会选举新的master了！**
+
+> 先在mha_manager上打开日志：
+>
+> tail -f /etc/mha/manager.log
+>
+> 到20上关闭MySQL服务：
+>
+> service mysqld stop
+>
+> 查看mha_manager日志输出：
+
+ <code><pre>
+
+----- Failover Report ----- 
+
+mha: MySQL Master failover 10.211.55.20 to 10.211.55.21 succeeded 
+
+Master 10.211.55.21 is down!
+
+Check MHA Manager logs at localhost.localdomain:/etc/mha/manager.log for details.
+
+Started automated(non-interactive) failover.
+
+The latest slave 10.211.55.21(10.211.55.21:3306) has all relay logs for recovery.
+
+Selected 10.211.55.21 as a new master.
+
+10.211.55.21: OK: Applying all logs succeeded.
+
+10.211.55.21: This host has the latest relay log events.
+
+Generating relay diff files from the latest slave succeeded.
+
+10.211.55.21: OK: Applying all logs succeeded. Slave started, replicating from 10.211.55.21.
+
+10.211.55.21: Resetting slave info succeeded.
+
+Master failover to 10.211.55.20(10.211.55.21:3306) completed successfully.
+
+</code></pre>
+
+**看来21变成了master！~**
+
+**可以去新主上创建个库或到21上查看一下master.info来验证！！**
+
+<!--老master恢复后如果想要它再做master，要先将新master的数据同步，之后删除下面两个文件，再重新开启MHA功能，令新master宕掉即可（实验可行，实际操作不推荐）如下：-->
+
+<!--注意：mha_manager每执行一次failover后，该进程自动退出。如果还想测试failover需要重新开启---开启前要将下面两个文件删掉：-->
+
+<!--[root@jdata4 mha]# cd /etc/mha/-->
+
+<!--[root@jdata4  mha]# rm -fr mha.failover.complete saved_master_binlog_from_10.211.55.21_3306_20180417154913.binlog-->
+
+
+
+**<u>下面演示old_master回来，如何保证old_master同步new_master的新产生的数据：</u>**
+
+**当old_master服务宕掉后，去mha_monitor上执行：**
+
+**[root@mha_master mha]# grep -i change /etc/mha/manager.log (-i 是不区分大小写)**
+
+**Tue Jun 13 02:30:23 2018 - [info]  All other slaves should start replication from here. Statement should be: CHANGE MASTER TO MASTER_HOST='10.211.55.21', MASTER_PORT=3306, MASTER_LOG_FILE='binlog.000001', MASTER_LOG_POS=106, MASTER_USER='sky', MASTER_PASSWORD='xxx';**
+
+**然后在old_master上执行：**
+
+ <code><pre>
+
+mysql> slave stop;
+mysql> change master to  master_host='10.211.55.21', master_port=3306, master_log_file='binlog.000001', master_log_pos=106, master_user='sky', master_password='youpassword';(只需要修改密码即可)
+mysql> slave start;
+
+ </code></pre>
+
+
+
+
+
+
+
+
+
