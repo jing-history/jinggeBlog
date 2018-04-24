@@ -330,11 +330,70 @@ mysql> slave start;
 
  </code></pre>
 
+***坑点3：mysql 的密码忘记了，重置密码的解决方案：***
+
+[重置密码解决MySQL for Linux错误 ERROR 1045 (28000)](https://www.cnblogs.com/gumuzi/p/5711495.html)
+
+方法如下：
+
+`vim /etc/my.cnf(注：windows下修改的是my.ini)`
+
+在文档内搜索mysqld定位到[mysqld]文本段：
+
+/mysqld(在vim编辑状态下直接输入该命令可搜索文本内容)
+
+保存文档并退出：
+
+`:wq`
+
+2.接下来我们需要重启MySQL：
+
+`service mysqld restart`
+
+3.重启之后输入#mysql即可进入mysql。
+
+4.接下来就是用sql来修改root的密码
+
+`mysql> use mysql;`
+
+`mysql> update user set password=password("你的新密码") where user="root";`
+
+`mysql> flush privileges;`
+
+`mysql> quit`
+
+到这里root账户就已经重置成新的密码了。
+
+5.编辑my.cnf,去掉刚才添加的内容，然后重启MySQL。大功告成。
 
 
 
+***坑点4：&>/dev/null表示的意思***
 
+[/dev/null表示的意思](https://blog.csdn.net/long2746004900/article/details/53367353)
 
+**用 /dev/null 2>&1 这样的写法.这条命令的意思是将标准输出和错误输出全部重定向到/dev/null中,也就是将产生的所有信息丢弃.**
+
+------
+
+#### MHA failover(master故障)后VIP漂移 (没有测试成功，应该是脚本写错了)
+
+**MHA架构中，master来承担写请求，但是如果发生了failover，那么就应该让new_master来承担写请求，有哪些方式可以实现呢？**
+
+1. 改变master的IP：在web上修改PHP页面的代码（所有写请求修改成new_master的IP）
+2. 使用虚拟IP（VIP），将VIP漂移给new_master
+
+显然，第二种方案要更加容易实现、高效。
+
+**实现起来，大家可能会首当其冲的想到keepalived，但是在这里不适用，因为我们不好判断哪一个salve会在failover后变成master（在keepalived中，VIP根据物理路由器的优先级来确定，万一漂到一台slave上那可如何是好！）。不过我们可以通过脚本的方式来实现将VIP绑定到new_master上。**
+
+**脚本思路如下：**
+
+​       ***脚本（/etc/mha/check_mysql）运行在manager上，它来管理VIP***
+
+​       ***判断谁是主，确保它有VIP，并继续判断，如果slave有VIP，则收回。***
+
+**脚本名称：master_vip_drift.sh**
 
 
 

@@ -114,3 +114,75 @@ a1.channels.c1.transactionCapacity = 100
   </pre></code>
 
 ![030dfe0.png](http://www.wailian.work/images/2018/04/20/030dfe0.png)
+
+
+
+------
+
+### 使用过程中大问题总汇：
+
+> **flume的memeryChannel中transactionCapacity和sink的batchsize**
+
+##### 运行时候报下面错误：
+
+  <pre><code>
+
+16/04/29 09:36:15 ERROR sink.AbstractRpcSink: Rpc Sink avro-sink: Unable to get event from channel memoryChannel. Exception follows.
+org.apache.flume.ChannelException: Take list for MemoryTransaction, capacity 10 full, consider committing more frequently, increasing capacity, or increasing thread count
+at org.apache.flume.channel.MemoryChannel$MemoryTransaction.doTake(MemoryChannel.java:96)
+at org.apache.flume.channel.BasicTransactionSemantics.take(BasicTransactionSemantics.java:113)
+at org.apache.flume.channel.BasicChannelSemantics.take(BasicChannelSemantics.java:95)
+at org.apache.flume.sink.AbstractRpcSink.process(AbstractRpcSink.java:354)
+at org.apache.flume.sink.DefaultSinkProcessor.process(DefaultSinkProcessor.java:68)
+at org.apache.flume.SinkRunner$PollingRunner.run(SinkRunner.java:147)
+at java.lang.Thread.run(Thread.java:745)
+
+  </pre></code>
+
+**参考的解决方案：**
+
+[transactionCapacity和sink的batchsize需要注意事项](https://blog.csdn.net/joy6331/article/details/51279670)
+
+**原因是：**
+
+**<u>flume的实时日志收集，用flume默认的配置后，发现不是完全实时的，于是看了一下，原来是memeryChannel的transactionCapacity在作怪，因为他默认是100，也就是说收集端的sink会在收集到了100条以后再去提交事务（即发送到下一个目的地）。</u>**
+
+
+
+> **flume 收集 java exception 错误日志的问题**
+
+`flume 在收集到java throw Exception 异常日志信息的时候既然不是整条ERROR 异常错误，如下：`
+
+![04.png](http://www.wailian.work/images/2018/04/24/04.png)
+
+`它是将上面的异常每条都传输到后台处理，像这种应该合并成一个Event里面`
+
+**参考的解决方案：**
+
+[Flume<自定义Source和拦截器实现抓取异常多行日志>](https://blog.csdn.net/gpwner/article/details/71275737)
+
+**<u>我采用的是自定义Source 的方式，可以将错误的信息合并后传输：</u>**
+
+**其核心思想是：**
+
+如果当前有两行记录，如果两行记录都是“正常”的日志信息，比如：
+
+  <pre><code>
+
+2016-07-08 09:33:53-[Analysis-WC] INFO [main] FormulaContextUtil.init(68) | into FormulaContextUtil.init method begin ....
+2016-07-08 09:33:53-[Analysis-WC] INFO [main] FormulaContextUtil.init(133) | FormulaContextUtil.init method end ....
+
+  </pre></code>
+
+则**单独将每一行当做一个Event，**传递； 
+当连续的两条记录诸如这样的形式：
+
+  <pre><code>
+
+2016-07-28 15:49:05-[Analysis-WC] ERROR [http-8080-2] ControllerProxy.afterMethod(43) | java.lang.NullPointerException
+java.lang.NullPointerException
+    at com.ap.alt.system.web.LoginMgrController.getSumMXYJTC(LoginMgrController.java:304)
+
+  </pre></code>
+
+**则将下一行日志合并到上一个Event中。**
