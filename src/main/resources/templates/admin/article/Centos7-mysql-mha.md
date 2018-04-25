@@ -26,7 +26,7 @@
 
 #### 使用ssh-kegen生成公私钥（每台服务器上），下面是批量执行脚本：
 <pre><code>
-\#!/bin/bash
+#!/bin/bash
   for i in 0 1 2 3
 ​        do
 ​                ssh-copy-id -i /root/.ssh/id_rsa.pub 10.211.55.20$i
@@ -79,10 +79,10 @@
 
   <pre><code>
       mysql> slave stop;
-      mysql> change master to 	      					master_host=”10.211.55.20”,master_user=”sky”,master_passoword=”62661206”,master_log_file=”mysql-bin.000003”;
-​      mysql> reset slave; (注意:如果之前因为同步数据的时候sql执行错误，这里要清除掉)
-​      mysql> slave start;
-​      mysql> show slave status\G        //查看复制线程状态
+​     mysql> change master to master_host="10.211.55.20",master_user="sky",master_passoword="yourpassword",master_log_file=”mysql-bin.000003”;
+​     mysql> reset slave; (注意:如果之前因为同步数据的时候sql执行错误，这里要清除掉)
+​     mysql> slave start;
+​     mysql> show slave status\G        //查看复制线程状态
   </code></pre>
 
 **<u>在mysql_b2（22）做21上同样的操作！</u>**
@@ -93,7 +93,7 @@
 
 **manager机器上（23）：cd /root/zing (mha4mysql-node 和 mha4mysql-manager rpm 文件,要保存这2个文件，这2个东西不好找，下面提供下载地址)**
 
-URL、………………………………..
+网盘链接：[mha软件下载](https://pan.baidu.com/s/1-lFvROxmIz2AxahO61qE4Q) 
 
 在管理节点安装MHA管理组件，先安装node再安装manager软件本身有依赖关系
 
@@ -134,8 +134,8 @@ OK，检查好已添加至源后就可以进行yum安装了。
   <pre><code>
    	for i in 1 2 3 ;
    	do
-  	scp mha4mysql-node-0.56-0.el6.noarch.rpm 10.211.55.2$i:/usr/src;done
-
+  	scp mha4mysql-node-0.56-0.el6.noarch.rpm 10.211.55.2$i:/usr/src;
+  	done
    </code></pre>
 
 **mha_node: 安装到其他node(所有其他机器)**
@@ -153,29 +153,29 @@ OK，检查好已添加至源后就可以进行yum安装了。
   <pre><code>
 	[server default]
 
-​	\#mysql admin account and password
+​	#mysql admin account and password
 
 ​	user=root
 
 ​	password=62661206
 
-​	\#mha workdir and worklog
+​	#mha workdir and worklog
 
 ​	manager_workdir=/etc/mha
 
 ​	manager_log=/etc/mha/manager.log
 
-​	\#mysql A/B account and pw
+​	#mysql A/B account and pw
 
 ​	repl_user=sky
 
 ​	repl_password=62661206
 
-​	\#check_mha_node time
+​	#check_mha_node time
 
 ​	ping_interval=1
 
-​	\#ssh account
+​	#ssh account
 
 ​	ssh_user=root
 
@@ -217,22 +217,17 @@ OK，检查好已添加至源后就可以进行yum安装了。
 `Tue Jun 13 02:21:31 2017 - [info] All SSH connection tests passed successfully. 有这个表示成功`
 
 **测AB**
-
    <code><pre>
-
 ​	[root@localhost src]# masterha_check_repl --conf=/etc/mha/mha.cnf
-
 ​	…
-
 ​	MySQL Replication Health is OK.
-
    </code></pre>
 
 ***坑点2：masterha_check_repl 检测没有通过，报下面错误：***
 
-![01.jpg](http://www.wailian.work/images/2018/04/21/01.jpg)
+[![检测错误](http://www.wailian.work/images/2018/04/20/1error.jpg)](http://www.wailian.work/image/epe1Ue)
 
-[MHA 报错：There is no alive slave. We can't do failover](http://www.mamicode.com/info-detail-2089525.html) 	
+[MHA 报错：There is no alive slave. We can't do failover](http://www.mamicode.com/info-detail-2089525.html) 
 
 > 关于该问题，比较靠谱的解释是：（我的问题是没有关防火墙）
 
@@ -376,24 +371,202 @@ mysql> slave start;
 
 ------
 
-#### MHA failover(master故障)后VIP漂移 (没有测试成功，应该是脚本写错了)
+#### MHA failover(master故障)后VIP漂移
 
 **MHA架构中，master来承担写请求，但是如果发生了failover，那么就应该让new_master来承担写请求，有哪些方式可以实现呢？**
 
 1. 改变master的IP：在web上修改PHP页面的代码（所有写请求修改成new_master的IP）
 2. 使用虚拟IP（VIP），将VIP漂移给new_master
 
-显然，第二种方案要更加容易实现、高效。
+**显然，第二种方案要更加容易实现、高效。**
 
 **实现起来，大家可能会首当其冲的想到keepalived，但是在这里不适用，因为我们不好判断哪一个salve会在failover后变成master（在keepalived中，VIP根据物理路由器的优先级来确定，万一漂到一台slave上那可如何是好！）。不过我们可以通过脚本的方式来实现将VIP绑定到new_master上。**
 
 **脚本思路如下：**
 
-​       ***脚本（/etc/mha/check_mysql）运行在manager上，它来管理VIP***
+> ​       脚本（/etc/mha/check_mysql）运行在manager上，它来管理VIP
 
-​       ***判断谁是主，确保它有VIP，并继续判断，如果slave有VIP，则收回。***
+> ​       判断谁是主，确保它有VIP，并继续判断，如果slave有VIP，则收回。
 
-**脚本名称：master_vip_drift.sh**
+**脚本名称：master_vip_drift.sh(<u>如果不是salve 的话，|grep -w 'Slave_IO_Running'应该是错误的不是1</u>)**
 
+ <code><pre>
+#!/bin/bash
+VIP=10.211.55.23
+NETMASK=255.255.255.0
+MUSER=root
+MPW=62661206
+MYSQL_IP="10.211.55.20 10.211.55.21 10.211.55.22"
+NIC=eth0
+check_master(){
+  for IP in $MYSQL_IP
+​    do
+​      if ssh $IP "lsof -i :3306" &>/dev/null;then
+​      ssh $IP "mysql -uroot -p62661206 -e 'show slave status \G'|grep -w 'Slave_IO_Running'" &>/dev/null
+​        echo "$#"
+​        if [ $? -eq 1 ];then
+​                MY_master=$IP
+​                echo "$MY_master"
+​        fi
+​      fi
+done
+}
 
+check_master_alive(){
+  for IP in $MYSQL_IP
+​    do
+​      if ssh $IP "ip add show eth0"|grep inet|grep "$VIP" &>/dev/null;then
+​    ssh $IP "lsof -i:3306" &>/dev/null
+​      if [ $? -ne 0 ];then
+​    ssh $IP "ifconfig $NIC:23 down "
+​      fi
+​      fi
+done
+}
 
+VIP() {
+  for IP in $MYSQL_IP
+​    do
+​      ssh $IP "ip add show eth0"|grep inet|grep "$VIP" &>/dev/null
+​      if [ $? -eq 0 ] && [[ $MY_master != "$IP" ]];then
+​      ssh $IP "ifconfig $NIC:23 down"
+​      elif [ $? -eq 1 ] && [[ $MY_master == "$IP" ]];then
+​      ssh $IP "ifconfig $NIC:23 $VIP netmask $NETMASK up"
+​      fi
+done
+}
+
+while true
+   do
+​    check_master
+     check_master_alive
+     VIP
+​     sleep 1
+done
+ </code></pre>
+
+***坑点5：shell脚本报错："[: =: unary operator expected"***
+
+[参考链接shell脚本报错](https://blog.csdn.net/goodlixueyong/article/details/6564591)
+
+**shell脚本报错："[: =: unary operator expected"**
+
+ 究其原因，是因为如果变量STATUS值为空，那么就成了 [ = "OK"] ，显然 [ 和 "OK" 不相等并且缺少了 [ 符号，所以报了这样的错误。当然不总是出错，如果变量STATUS值不为空，程序就正常了，所以这样的错误还是很隐蔽的。
+
+**改成 if [[ $STATUS = "OK" ]];** 
+
+##### 分析failover日志—了解MHA工作流程
+
+1. tailf /etc/mha/manager.log
+2. 到master上关闭MySQL服务
+3. 查看日志并从头往下捋一遍
+
+------
+
+#### MySQL MHA读写分离
+
+> **Mysql_manager和HAProxy(10.211.55.23)**
+
+> **MySQL_A(10.211.55.20)**
+
+> **MySQL_B1(10.211.55.21)**
+
+> **MySQL_B2(10.211.55.22)**
+
+![image1.png](http://www.wailian.work/images/2018/04/25/image1.png)
+
+**结构图说明：**
+
+> **a.MHA对abb架构实行监控，发现a宕之后选出新a（实现VIP漂移，仅a有VIP）**
+>
+> **b.haproxy对slave集群实现负载均衡，承担读请求**
+>
+> **c.web集群请求后台数据，写请求传给a(VIP)，读请求传给haproxy，haproxy再对读请求实现分发达到负载均衡**
+
+#####   安装HAProxy(10.211.55.23)
+
+网盘链接：[mha软件下载](https://pan.baidu.com/s/1-lFvROxmIz2AxahO61qE4Q) 
+
+ <code><pre>
+yum install gcc -y
+tar xf haproxy-1.5.3.tar
+make TARGET=linux26 PREFIX=/usr/local/haproxy
+make install PREFIX=/usr/local/haproxy
+cp /usr/src/haproxy/haproxy-1.5.3/examples/haproxy.cfg /usr/local/haproxy/
+cp /usr/src/haproxy/haproxy-1.5.3/examples/haproxy.init /etc/init.d/haproxy
+chmod 755 /etc/init.d/haproxy
+ln -s /usr/local/haproxy/sbin/* /usr/sbin/
+mkdir /etc/haproxy
+mkdir /usr/share/haproxy
+ln -s /usr/local/haproxy/haproxy.cfg /etc/haproxy/
+cd ..
+ </code></pre>
+
+***设置配置文件***
+
+`[root@HAProxy_247 haproxy]# cp haproxy.cfg  /usr/local/haproxy/`
+
+***编辑配置文件***
+
+`[root@HAProxy_247 haproxy]# vim /usr/local/haproxy/haproxy.cfg`
+
+ <code><pre>
+# this config needs haproxy-1.1.28 or haproxy-1.2.1
+global
+    log 127.0.0.1    local0
+    log 127.0.0.1    local1 notice
+    #log loghost    local0 info
+    maxconn 4096
+    chroot /usr/share/haproxy
+    uid 99
+    gid 99
+    daemon
+    #debug
+    #quiet
+defaults
+    log    global
+    mode    http
+    #option    httplog
+    option    dontlognull
+    retries    3
+    option redispatch
+    maxconn    2000
+    contimeout    5000
+    clitimeout    50000
+    srvtimeout    50000
+listen    MySQL 0.0.0.0:3306
+    mode tcp
+    maxconn    200
+    balance roundrobin
+    option mysql-check user root
+    server mysql_1 10.211.55.21:3306  inter 1s rise 2 fall 2
+    server mysql_2 10.211.55.22:3306  inter 1s rise 2 fall 2
+listen  admin_status
+        mode  http
+        bind 0.0.0.0:8899
+        option httplog
+        log global
+        stats enable
+        stats refresh 10s
+        stats hide-version
+        stats realm Haproxy\ Statistics
+        stats uri  /admin-status 
+        stats auth  admin:123456 
+        stats admin if TRUE
+ </code></pre>
+
+***启动HAProxy服务***
+
+`[root@HAProxy_247 haproxy]# service haproxy start`
+
+**访问HAProxy的网页(用户名密码查看配置文件舍子)**
+
+`http://localhost:8899/admin-status`
+
+**客户端测试：**
+
+`mysql -uroot -pyoupassword -h 10.211.55.23`
+
+**在HAProxy管理界面，可以看到那台slave响应的请求**
+
+![image2.png](http://www.wailian.work/images/2018/04/25/image2.png)

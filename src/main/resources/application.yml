@@ -12,12 +12,11 @@ spring:
   redis:
     database: 0
    # Redis服务器地址
-    host: 10.211.55.20
+    host: 192.168.5.111
    # Redis服务器连接端口
     port: 6379
    # Redis服务器连接密码（默认为空）
-#    password:
-   # password: soonfor@db1379
+    password: soonfor@db1379
    # 连接超时时间（毫秒）
     timeout: 0
    # 连接池最大连接数（使用负值表示没有限制）
@@ -57,10 +56,10 @@ druid:
   filters: stat,wall,log4j,config
 # 合并多个DruidDataSource的监控数据
 #   useGlobalDataSourceStat: true
-  url: jdbc:mysql://10.211.55.20:3306/blog?useUnicode=true&characterEncoding=utf-8&useSSL=false
-  username: root
+  url: jdbc:mysql://192.168.5.111:3306/blog?useUnicode=true&characterEncoding=utf-8&useSSL=false
+  username: soonfor
   #java -cp druid-1.0.16.jar com.alibaba.druid.filter.config.ConfigTools 你的密码(admin123) admin soonfor
-  password: 62661206
+  password: sfadmin1379!
   # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
   connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
 
