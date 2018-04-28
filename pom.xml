@@ -34,6 +34,7 @@
         <java.version>1.8</java.version>
         <docker.plugin.version>0.4.13</docker.plugin.version>
         <docker.image.prefix>jingzing</docker.image.prefix>
+        <shardingjdbc.version>2.0.3</shardingjdbc.version>
     </properties>
 
     <dependencies>
@@ -78,6 +79,13 @@
             <artifactId>druid</artifactId>
             <version>1.0.16</version>
         </dependency>
+        <!-- 引入sharding-jdbc核心模块 -->
+        <dependency>
+            <groupId>io.shardingjdbc</groupId>
+            <artifactId>sharding-jdbc-core</artifactId>
+            <version>${shardingjdbc.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
