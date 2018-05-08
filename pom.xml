@@ -79,17 +79,15 @@
             <artifactId>druid</artifactId>
             <version>1.0.16</version>
         </dependency>
-        <!-- 引入sharding-jdbc核心模块 -->
-        <dependency>
-            <groupId>io.shardingjdbc</groupId>
-            <artifactId>sharding-jdbc-core</artifactId>
-            <version>${shardingjdbc.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
         </dependency>
         <!-- https://mvnrepository.com/artifact/javax.inject/javax.inject -->
         <dependency>
@@ -154,6 +152,11 @@
             <artifactId>jython-standalone</artifactId>
             <version>2.7.0</version>
         </dependency>
+        <!-- LEGACYHTML5需要搭配一个额外的库NekoHTML才可用 -->
+        <dependency>
+            <groupId>net.sourceforge.nekohtml</groupId>
+            <artifactId>nekohtml</artifactId>
+        </dependency>
 
         <!-- 只需引入spring-boot-devtools 即可实现热部署 -->
         <dependency>
@@ -162,7 +165,10 @@
             <optional>true</optional>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

@@ -6,6 +6,7 @@ spring:
     active: dev
   thymeleaf:
     cache: false
+    mode: LEGACYHTML5
   jade4j:
     caching: false
   # Redis数据库索引（默认为0）
