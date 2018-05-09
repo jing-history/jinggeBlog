@@ -149,8 +149,7 @@
                 <cite>骚年，坚持想法，坚持实践吧！</cite>
             </figure>
         </section>
-        <ul>
-            <div th:each="m : ${loves}">
+        <ul th:each="m : ${loves}">
                 <li>
                     <time>2009,8,10</time>
                     <h3 th:text="${m.title}"></h3>
@@ -162,9 +161,8 @@
                         <figcaption th:text="${m.figcaption}"></figcaption>
                     </figure>
                 </li>
-            </div>
 
-            <li>
+           <!-- <li>
                 <time>2010,8,10</time>
                 <h3>B3log 成立</h3>
                 <article>
@@ -232,7 +230,7 @@
                     <img src="//static.b3log.org/images/logo.png" title="PS 了一晚上才诞生的 logo">
                     <figcaption>PS 了一晚上才诞生的 logo</figcaption>
                 </figure>
-            </li>
+            </li>-->
         </ul>
     </div>
 </div>
