@@ -2,6 +2,7 @@ package gq.jingge.blog.web;
 
 import com.google.gson.Gson;
 import gq.jingge.blog.config.Constants;
+import gq.jingge.blog.domain.Love;
 import gq.jingge.blog.domain.Post;
 import gq.jingge.blog.service.AppSetting;
 import gq.jingge.blog.service.PostService;
@@ -64,10 +65,15 @@ public class HomeController {
     @RequestMapping(value = "love", method = GET)
     public String love(Model model) throws IOException {
 
-        //    Gson gson = new Gson();
-        //    String result = gson.toJson(post);
-        String result = "{\"username\":\"张三\",\"password\":\"123\",\"money\":500,\"book\":{\"id\":0,\"name\":\"三国演义\",\"price\":0,\"author\":\"罗贯中\"}}";
+        List<Love> loves = new ArrayList<>();
+        Love love = new Love("My Test",
+                "先写奥斯卡等级啊是",
+                "http://s1.wailian.download/2017/12/18/2017.md.jpg",
+                "这是图片",
+                "PS 了一晚上才诞生的 logo");
+        loves.add(love);
 
+        model.addAttribute("loves", loves);
         return "home/love";
     }
 

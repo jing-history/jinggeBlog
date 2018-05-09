@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Love For You</title>
@@ -46,9 +46,7 @@
     </script>
 </head>
 <body>
-<audio preload="auto" loop="loop">
-    <source src="audio/renxi.mp3" type="audio/mp3"/>
-</audio>
+<audio preload="auto" loop="loop" src="http://stor.cloudmusics.cn/mp3/2018/04/2b0ba284406121ea72dc4d493d515c33.mp3"></audio>
 <div id="main">
     <!--<div id="error">本页面采用HTML5编辑，目前您的浏览器无法显示，请换成谷歌(<a
             href="http://www.google.cn/chrome/intl/zh-CN/landing_chrome.html?hl=zh-CN&brand=CHMI">Chrome</a>)或者火狐(<a
@@ -152,6 +150,20 @@
             </figure>
         </section>
         <ul>
+            <div th:each="m : ${loves}">
+                <li>
+                    <time>2009,8,10</time>
+                    <h3 th:text="${m.title}"></h3>
+                    <article>
+                        <p th:text="${m.article}"></p>
+                    </article>
+                    <figure>
+                        <img th:src="${m.figureImg}" th:title="${m.figureMsg}">
+                        <figcaption th:text="${m.figcaption}"></figcaption>
+                    </figure>
+                </li>
+            </div>
+
             <li>
                 <time>2010,8,10</time>
                 <h3>B3log 成立</h3>
@@ -171,8 +183,7 @@
                 <h3>B3log 成立</h3>
                 <article>
                     <p>
-                        在 <a href="http://88250.b3log.org" target="_blank">D</a>（后端）和
-                        <a href="http://vanessa.b3log.org" target="_blank">V</a>（前端）不断日积月累的努力下，B3log 终于成立了！
+                        对于我们做微商的来说，微信群内课程培训少不了，但是，因为我们的群内好友分散在各个地方，每个人的事情也都不一样，造成有的朋友可以不能及时进群听课。这样会错过群内培训。
                     </p>
                 </article>
                 <figure>
