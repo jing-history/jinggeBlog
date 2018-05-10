@@ -46,7 +46,9 @@
     </script>
 </head>
 <body>
-<audio preload="auto" loop="loop" src="http://stor.cloudmusics.cn/mp3/2018/04/2b0ba284406121ea72dc4d493d515c33.mp3"></audio>
+<audio preload="auto" loop="loop">
+    <source src="/love/audio/love.mp3"></audio>
+</audio>
 <div id="main">
     <!--<div id="error">本页面采用HTML5编辑，目前您的浏览器无法显示，请换成谷歌(<a
             href="http://www.google.cn/chrome/intl/zh-CN/landing_chrome.html?hl=zh-CN&brand=CHMI">Chrome</a>)或者火狐(<a
@@ -151,7 +153,7 @@
         </section>
         <ul th:each="m : ${loves}">
                 <li>
-                    <time>2009,8,10</time>
+                    <time>2010,8,10</time>
                     <h3 th:text="${m.title}"></h3>
                     <article>
                         <p th:text="${m.article}"></p>
@@ -161,76 +163,6 @@
                         <figcaption th:text="${m.figcaption}"></figcaption>
                     </figure>
                 </li>
-
-           <!-- <li>
-                <time>2010,8,10</time>
-                <h3>B3log 成立</h3>
-                <article>
-                    <p>
-                        在 <a href="http://88250.b3log.org" target="_blank">D</a>（后端）和
-                        <a href="http://vanessa.b3log.org" target="_blank">V</a>（前端）不断日积月累的努力下，B3log 终于成立了！
-                    </p>
-                </article>
-                <figure>
-                    <img src="//static.b3log.org/images/logo.png" title="PS 了一晚上才诞生的 logo">
-                    <figcaption>PS 了一晚上才诞生的 logo</figcaption>
-                </figure>
-            </li>
-            <li>
-                <time>2011,8,10</time>
-                <h3>B3log 成立</h3>
-                <article>
-                    <p>
-                        对于我们做微商的来说，微信群内课程培训少不了，但是，因为我们的群内好友分散在各个地方，每个人的事情也都不一样，造成有的朋友可以不能及时进群听课。这样会错过群内培训。
-                    </p>
-                </article>
-                <figure>
-                    <img src="//static.b3log.org/images/logo.png" title="PS 了一晚上才诞生的 logo">
-                    <figcaption>PS 了一晚上才诞生的 logo</figcaption>
-                </figure>
-            </li>
-            <li>
-                <time>2012,8,10</time>
-                <h3>B3log 成立</h3>
-                <article>
-                    <p>
-                        在 <a href="http://88250.b3log.org" target="_blank">D</a>（后端）和
-                        <a href="http://vanessa.b3log.org" target="_blank">V</a>（前端）不断日积月累的努力下，B3log 终于成立了！
-                    </p>
-                </article>
-                <figure>
-                    <img src="//static.b3log.org/images/logo.png" title="PS 了一晚上才诞生的 logo">
-                    <figcaption>PS 了一晚上才诞生的 logo</figcaption>
-                </figure>
-            </li>
-            <li>
-                <time>2013,8,10</time>
-                <h3>B3log 成立</h3>
-                <article>
-                    <p>
-                        在 <a href="http://88250.b3log.org" target="_blank">D</a>（后端）和
-                        <a href="http://vanessa.b3log.org" target="_blank">V</a>（前端）不断日积月累的努力下，B3log 终于成立了！
-                    </p>
-                </article>
-                <figure>
-                    <img src="//static.b3log.org/images/logo.png" title="PS 了一晚上才诞生的 logo">
-                    <figcaption>PS 了一晚上才诞生的 logo</figcaption>
-                </figure>
-            </li>
-            <li>
-                <time>2014,8,10</time>
-                <h3>B3log 成立</h3>
-                <article>
-                    <p>
-                        在 <a href="http://88250.b3log.org" target="_blank">D</a>（后端）和
-                        <a href="http://vanessa.b3log.org" target="_blank">V</a>（前端）不断日积月累的努力下，B3log 终于成立了！
-                    </p>
-                </article>
-                <figure>
-                    <img src="//static.b3log.org/images/logo.png" title="PS 了一晚上才诞生的 logo">
-                    <figcaption>PS 了一晚上才诞生的 logo</figcaption>
-                </figure>
-            </li>-->
         </ul>
     </div>
 </div>
