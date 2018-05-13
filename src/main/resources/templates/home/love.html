@@ -3,10 +3,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Love For You</title>
-    <link type="text/css" rel="stylesheet" href="/love/assets/renxi/default.css" />
-    <link type="text/css" rel="stylesheet" href="/love/css/style.css" />
-    <link type="text/css" rel="stylesheet" href="/love/assets/lib/timeline/timeline.css" charset="utf-8" />
-    <link type="text/css" rel="stylesheet" href="/love/assets/lib/fancybox/jquery.fancybox.css" charset="utf-8" />
+    <link th:href="@{/assets/renxi/default.css}" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link th:href="@{/js/lib/timeline/timeline.css}" rel="stylesheet">
     <!--[if lt IE 9]>
     <script type="text/javascript">
         (function () {
@@ -17,19 +16,19 @@
         })();
     </script>
     <![endif]-->
-    <script type="text/javascript" src=/love/assets/renxi/jquery.min.js"></script>
-    <script type="text/javascript" src=/love/assets/renxi/jscex.min.js"></script>
-    <script type="text/javascript" src=/love/assets/renxi/jscex-parser.js" ></script>
-    <script type="text/javascript" src=/love/assets/renxi/jscex-jit.js" ></script>
-    <script type="text/javascript" src=/love/assets/renxi/jscex-builderbase.min.js" ></script>
-    <script type="text/javascript" src=/love/assets/renxi/jscex-async.min.js"></script>
-    <script type="text/javascript" src=/love/assets/renxi/jscex-async-powerpack.min.js"></script>
-    <script type="text/javascript" src=/love/assets/renxi/functions.js" charset="utf-8"></script>
-    <script type="text/javascript" src=/love/assets/renxi/love.js" charset="utf-8"></script>
-    <script type="text/javascript" src=/love/assets/js/parallax-slider/jquery.easing.1.3.js" charset="utf-8"></script>
-    <script type="text/javascript" src=/love/assets/js/parallax-slider/cufon-yui.js"></script>
-    <script type="text/javascript" src=/love/assets/js/parallax-slider/ChunkFive_400.font.js"></script>
-    <script type="text/javascript" src=/love/assets/js/audiojs/audio.min.js"></script>
+    <script type="text/javascript" th:src="@{/assets/renxi/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/renxi/jscex.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/renxi/jscex-parser.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/renxi/jscex-jit.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/renxi/jscex-builderbase.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/renxi/jscex-async.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/renxi/jscex-async-powerpack.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/renxi/functions.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/assets/renxi/love.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/assets/js/parallax-slider/jquery.easing.1.3.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/assets/js/parallax-slider/cufon-yui.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/parallax-slider/ChunkFive_400.font.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/audiojs/audio.min.js}"></script>
     <style type="text/css">
         <!--
         .STYLE1 {
@@ -47,7 +46,7 @@
 </head>
 <body>
 <audio preload="auto" loop="loop">
-    <source src="/love/audio/love.mp3"></audio>
+    <source src="/audio/love.mp3"></audio>
 </audio>
 <div id="main">
     <!--<div id="error">本页面采用HTML5编辑，目前您的浏览器无法显示，请换成谷歌(<a
@@ -155,7 +154,7 @@
             <h2>时间轴 上线</h2>
             <article>
                 <p>
-                    <img src="/love/images/jing.jpeg" title="大经哥" width="150" height="150"/><br/>
+                    <img src="/images/jing.jpeg" title="大经哥" width="150" height="150"/><br/>
                     <a href="jinggo.ml" target="_blank">骚年，坚持梦想，Go Go Go！</a>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </p>
@@ -368,7 +367,8 @@
         }
     })();
 </script>
-<script type="text/javascript" src="/love/assets/lib/timeline/timeline-min.js" charset="utf-8"></script>
-<script type="text/javascript" src="/love/assets/lib/common.js" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/lib/jquery.min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/lib/timeline/timeline-min.js}" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/js/common.js}" charset="utf-8"></script>
 </body>
 </html>
