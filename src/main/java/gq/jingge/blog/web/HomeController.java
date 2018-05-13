@@ -2,11 +2,15 @@ package gq.jingge.blog.web;
 
 import com.google.gson.Gson;
 import gq.jingge.blog.config.Constants;
+import gq.jingge.blog.dao.LoveRepository;
 import gq.jingge.blog.domain.Love;
 import gq.jingge.blog.domain.Post;
+import gq.jingge.blog.domain.vo.LoveForm;
 import gq.jingge.blog.service.AppSetting;
 import gq.jingge.blog.service.PostService;
+import gq.jingge.blog.util.DTOUtil;
 import org.json.JSONArray;
+import org.python.icu.text.SimpleDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -21,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +41,12 @@ public class HomeController {
     private PostService postService;
 
     @Autowired
+    private LoveRepository loveRepository;
+
+    @Autowired
     private AppSetting appSetting;
+
+    private static SimpleDateFormat FORMATDATE = new SimpleDateFormat("yyyy,MM,dd");
 
     @RequestMapping(value = "", method = GET)
     public String index(@RequestParam(defaultValue = "1") int page, Model model) {
@@ -65,15 +75,18 @@ public class HomeController {
     @RequestMapping(value = "love", method = GET)
     public String love(Model model) throws IOException {
 
-        List<Love> loves = new ArrayList<>();
-        Love love = new Love("My Test",
-                "先写奥斯卡等级啊是",
-                "http://s1.wailian.download/2017/12/18/2017.md.jpg",
-                "这是图片",
-                "PS 了一晚上才诞生的 logo");
-        loves.add(love);
+        List<LoveForm> loveForms = new ArrayList<>();
+        List<Love> loves = loveRepository.findAll();
+        for (Love love : loves) {
+            LoveForm loveForm = DTOUtil.map(love, LoveForm.class);
+            Date nowDate = love.getCreatedAt();
+            String dateStr = FORMATDATE.format(nowDate);
+            loveForm.setFormatDate(dateStr);
 
-        model.addAttribute("loves", loves);
+            loveForms.add(loveForm);
+        }
+
+        model.addAttribute("loves", loveForms);
         return "home/love";
     }
 

@@ -136,27 +136,41 @@
 <div class="wrapper">
     <!-- start time line -->
     <div id="timeline" style="margin:0px auto;">
-        <section>
-            <time>2009,12,9</time>
-            <h2>B3log 源起</h2>
+        <!--<section>
+            <time>2018,05,12</time>
+            <h2>宝宝时间轴 上线</h2>
             <article>
                 <p>
-                    <a href="http://88250.b3log.org/articles/2009/12/09/1260370800000.html" target="_blank">88250
-                        的“一分钟想法”</a>
+                    <a href="jinggo.ml" target="_blank">骚年，坚持想法，坚持实践吧！</a>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </p>
             </article>
             <figure>
-                <img src="//static.b3log.org/images/timeline/getstarted.jpg" title="骚年，坚持想法，坚持实践吧！"/>
-                <cite>骚年，坚持想法，坚持实践吧！</cite>
+                <img src="/love/images/BB-13.jpg" title="丽江拉市海"/>
+                <cite>我不会轰轰烈烈，也不会甜言蜜语，但我愿尽我所能，带给你快了和幸福！！！</cite>
+            </figure>
+        </section>-->
+        <section>
+            <time>2018,05,12</time>
+            <h2>时间轴 上线</h2>
+            <article>
+                <p>
+                    <img src="/love/images/jing.jpeg" title="大经哥" width="150" height="150"/><br/>
+                    <a href="jinggo.ml" target="_blank">骚年，坚持梦想，Go Go Go！</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </p>
+            </article>
+            <figure>
+                <img src="http://www.wailian.work/images/2018/05/12/BB-13.jpg" title="丽江拉市海"/>
+                <cite>我不会轰轰烈烈，也不会甜言蜜语，但我愿尽我所能，带给你快了和幸福！！！</cite>
             </figure>
         </section>
         <ul th:each="m : ${loves}">
                 <li>
-                    <time>2010,8,10</time>
+                    <time th:text="${m.formatDate}"></time>
                     <h3 th:text="${m.title}"></h3>
                     <article>
-                        <p th:text="${m.article}"></p>
+                        <p th:text="${m.content}"></p>
                     </article>
                     <figure>
                         <img th:src="${m.figureImg}" th:title="${m.figureMsg}">

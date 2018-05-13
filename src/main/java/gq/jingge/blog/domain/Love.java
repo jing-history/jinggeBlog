@@ -18,7 +18,7 @@ public class Love extends BaseModel {
      private String title;
 
      @Column(nullable = false)
-     private String article;
+     private String content;
 
      @Column(nullable = false)
      private String figureImg;
@@ -33,9 +33,9 @@ public class Love extends BaseModel {
 
     }
 
-    public Love(String title, String article, String figureImg, String figureMsg, String figcaption) {
+    public Love(String title, String content, String figureImg, String figureMsg, String figcaption) {
         this.title = title;
-        this.article = article;
+        this.content = content;
         this.figureImg = figureImg;
         this.figureMsg = figureMsg;
         this.figcaption = figcaption;
@@ -73,19 +73,19 @@ public class Love extends BaseModel {
         this.figcaption = figcaption;
     }
 
-    public String getArticle() {
-        return article;
+    public String getContent() {
+        return content;
     }
 
-    public void setArticle(String article) {
-        this.article = article;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Override
     public String toString() {
         return "Love{" +
                 "title='" + title + '\'' +
-                ", article='" + article + '\'' +
+                ", article='" + content + '\'' +
                 ", figureImg='" + figureImg + '\'' +
                 ", figureMsg='" + figureMsg + '\'' +
                 ", figcaption='" + figcaption + '\'' +

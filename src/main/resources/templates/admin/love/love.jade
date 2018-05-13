@@ -1,7 +1,7 @@
 extends ../layout/admin
 
 block content
-  h1 心情内容
+  h1 宝宝时间轴
   hr
   
   a.btn.btn-primary(href="/admin/loves/new") Create
@@ -12,33 +12,27 @@ block content
         thead
           tr
             th ID
-            th Title 
-            th Format 
-            th Status
-            th Permalink
+            th Title
             th Created At 
             th Updated At 
             th.operations Operations
           
         tbody
-          for post in posts 
+          for love in loves
             tr
-              td #{post.getId()}
-              td #{post.getTitle()}
-              td #{post.getPostFormat()}
-              td #{post.getPostStatus()}
-              td #{post.getPermalink()}
-              td #{post.getCreatedAt()}
-              td #{post.getUpdatedAt()}
+              td #{love.getId()}
+              td #{love.getTitle()}
+              td #{love.getCreatedAt()}
+              td #{love.getUpdatedAt()}
               td.operations 
-                a.btn.btn-xs.btn-info(href="/posts/#{post.getId()}", target:'_blank')
+                a.btn.btn-xs.btn-info(href="/loves/#{love.getId()}", target:'_blank')
                   i.fa.fa-eye
-                a.btn.btn-xs.btn-primary(href="/admin/posts/#{post.getId()}/edit")
+                a.btn.btn-xs.btn-primary(href="/admin/loves/#{love.getId()}/edit")
                   i.fa.fa-edit
-                a.btn.btn-xs.btn-danger.btn-delete(href="javascript:deletePost(#{post.id})", postId="#{post.id}")
+                a.btn.btn-xs.btn-danger.btn-delete(href="javascript:deletePost(#{love.id})", postId="#{love.id}")
                   i.fa.fa-trash-o
                   
-                form(id="form-#{post.getId()}",style="visibility: hidden", method="post", action="/admin/posts/#{post.getId()}/delete")
+                form(id="form-#{love.getId()}",style="visibility: hidden", method="post", action="/admin/loves/#{love.getId()}/delete")
                   input(type="hidden", name='_csrf', value='#{_csrf.token}')
       .col-sm-12
         div#pagination

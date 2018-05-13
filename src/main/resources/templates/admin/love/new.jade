@@ -1,0 +1,51 @@
+extends ../layout/admin
+
+block head
+  script(src="/webjars/ace/1.2.6/src-min/ace.js")
+  script(src="/webjars/ace/1.2.6/src-min/theme-github.js")
+  script(src="/webjars/ace/1.2.6/src-min/mode-markdown.js")
+
+block content
+  h1 新增时间轴内容
+  hr
+
+  form.post-form(method="post",action="/admin/loves")
+    .item-row
+      input(type="hidden", name='_csrf', value='#{_csrf.token}')
+    .item-row
+      input.form-control(type="text", name="title", value='#{loveForm.getTitle()}')
+    .item-row
+      textarea.form-control#content(name="content", style="display:none;")
+        = loveForm.getContent()
+      div#content-editor
+        #{loveForm.getContent()}
+    .item-row
+      hr
+      .row
+          .col-sm-3
+            span 展示图片
+            input.form-control(name="figureImg", value="#{loveForm.getFigureImg()}")
+
+          .col-sm-3
+            span 图片信息
+            input.form-control(name="figureMsg", value="#{loveForm.getFigureMsg()}")
+          .col-sm-3
+            span 图片说明
+            input.form-control(name="figcaption", value="#{loveForm.getFigcaption()}")
+    .item-row
+      hr
+      button.btn.btn-primary.btn-block(type="submit") Create new post
+
+  script
+    var editor = ace.edit("content-editor");
+    editor.setTheme("ace/theme/github");
+     
+    var MarkdownMode = ace.require("ace/mode/markdown").Mode;
+    editor.getSession().setMode(new MarkdownMode());
+    
+    editor.getSession().setUseWrapMode(true);
+    
+    $("form").submit(function(){
+        $("#content").val(editor.getValue());
+        return true;
+    });
